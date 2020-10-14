@@ -1,0 +1,13 @@
+{
+  "name": "mikado",
+  "version": "1.0.0",
+  "description": "Scans guilty gear videos to see who is playing",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@cliqz/adblocker-puppeteer": "^1.4.1",
+    "cross-fetch": "^3.0.4",
+    "get-image-colors": "^2.0.0",
+    "puppeteer": "^2.0.0"
+  }
+}
