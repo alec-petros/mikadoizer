@@ -62,18 +62,18 @@ async function skipAndGrab(page, validator) {
     await validator(`.image-b.jpg`, time, page, videoId);
 }
 
-async function isVenom(imgPath, time, page) {
+async function isVenom(imgPath, time, page, videoId) {
     await getColors(path.join(__dirname, imgPath)).then(async colors => {
         const match = parseColorsForMatch(colors);
         if (!!match.length) {
-            console.log(`https://youtu.be/${videoId}?t=${Math.round(time)} `, match);
+            console.log(`https://youtu.be/${videoId}?t=${Math.round(time)} `);
             await page.screenshot({ path: `./hit-${time}.jpg`, type: 'jpeg'});
             venomArray.push(time);
         }
     })
 }
 
-async function captureAll(imgPath, time, page) {
+async function captureAll(imgPath, time, page, videoId) {
     await getColors(path.join(__dirname, imgPath)).then(async colors => {
         await page.screenshot({ path: `./hit-${time}.jpg`, type: 'jpeg'});
         console.log(colors.map(color => color.hex()));
@@ -87,7 +87,7 @@ async function isPlaying(page) {
 }
 
 async function run() {
-    let browser = await puppeteer.launch({ headless: true });
+    let browser = await puppeteer.launch({ headless: false });
     let page = await browser.newPage();
     PuppeteerBlocker.fromPrebuiltAdsAndTracking(fetch).then((blocker) => {
         blocker.enableBlockingInPage(page);
@@ -95,7 +95,11 @@ async function run() {
     
     await page.setViewport({ width: 1080, height: 720 });
     console.log(`file://${__dirname}/index.html`)
-    await page.goto(`file://${__dirname}/index.html`);
+    if (process.env.VIDEO) {
+        await page.goto(`file://${__dirname}/index.html?video=${process.env.VIDEO}`);
+    } else {
+        await page.goto(`file://${__dirname}/index.html`);
+    }
     await page.click('#play');
     // await page.click('#skip');
     // await page.waitForFunction('document.getElementById("active").getAttribute("value") == "true"');

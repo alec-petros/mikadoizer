@@ -30,13 +30,13 @@ function handleStateChange(event) {
 function onYouTubeIframeAPIReady() {
     const videoId = getParameterByName('video');
 
-    player = new YT.Player('video-placeholder', {
+    const options = {
         width: 600,
         height: 400,
-        // videoId,
+        videoId: videoId ? videoId : null,
         playerVars: {
             listType: 'playlist',
-            list: 'PLx9EaNYNlICBcJovQS4rH7bQGI6J2Tvnt',
+            list: videoId ? 'PLx9EaNYNlICBcJovQS4rH7bQGI6J2Tvnt' : null,
             modestbranding: 1,
             rel: 0,
             controls: 0,
@@ -46,7 +46,19 @@ function onYouTubeIframeAPIReady() {
             onReady: initialize,
             onStateChange: handleStateChange,
         }
-    });
+    }
+
+    if (videoId) {
+        options.videoId = videoId;
+        console.log('loading with video id: ', videoId);
+        document.getElementById('video').textContent = videoId;
+    } else {
+        options.playerVars.listType = 'playlist';
+        options.playerVars.list = 'PLx9EaNYNlICBcJovQS4rH7bQGI6J2Tvnt'; // Mikado GGXRD Playlist
+    }
+
+
+    player = new YT.Player('video-placeholder', options);
 }
 
 function updateTimerDisplay(){
